@@ -68,7 +68,7 @@ Leave this running and browse to http://localhost:3002/ (use Chrome)
 to view the interface.
 
 Also, open a new terminal and run `nc localhost 4000` and you will see that
-qira starts running the binary. Supply "helloworld" to the prompt and press
+qira starts running the binary. Supply `helloworld` to the prompt and press
 Enter. In the Chrome window, you will see a new vertical bar on the left.
 This is known as the "timeline" and shows every step executed by the program
 invocation you just ran. Place your mouse cursor in the main panel and scroll
@@ -76,12 +76,10 @@ the mouse weel to move backwards and forwards in the program execution
 history. Notice that you can observe the register state, instruction
 execution, basic block diagram, and memory contents for every step of the
 program. You should also bring up the keyboard shortcuts in a new tab and
-familiarize yourself with with:
+familiarize yourself with them:
 
 >https://github.com/BinaryAnalysisPlatform/qira#keyboard-shortcuts-in-webclientcontrolsjs
 
-Even **more** useful is the `strace` output window below the register view.
-This shows any system call (with arguments and return values) done during the
 program run. If you scroll to the bottom of that window, you will see a call
 to `write()`. Click on the blue step count next to it to snap to where that
 happened in the instruction listing. If you click on the yellow instruction
@@ -129,7 +127,9 @@ constraint1 (c1): in1 + in2 != 0xc0dcdfce
 Now the goal is to go through all of the instruction "sets" and record the
 checks that it is enforcing on our input. While it is time-consuming and
 tedious, having the qira-recorded state is helpful to see which input chunks
-are being read from the stack and checked. Here are the constraints:
+are being read from the stack and checked. Here are the constraints (I
+purposely left some of them unreduced to match exactly what the assembly was
+doing. I'm also lazy. :)
 
 ```
 c1: in1 + in2 != 0xc0dcdfce
@@ -170,6 +170,4 @@ flag): **solving_equations_is_lots_of_fun**.
 
 Note, if you try to enforce that first constraint we found above, you'll find
 out that the system is not satisfiable! Thus the need to negate the constraint
-and add "c1b" instead. 
-
-Copy bitpuzzle-solver.py into `z3-4.4.1-x64-ubuntu-14.04/bin`
+and add  the `c1b` one instead. 
