@@ -106,7 +106,7 @@ passes and we get deeper into the program.  Your window should look something
 like this:
 
 ![qira
-bitpuzzle](https://github.com/nattypwns/ctf_writeups/tree/master/pico-ctf-2014/bitpuzzle-130/qira-screen.png)
+bitpuzzle](https://raw.githubusercontent.com/nattypwns/ctf_writeups/master/pico-ctf-2014/bitpuzzle-130/qira-screen.png)
 
 At this point the program starts doing checks on 4-byte pieces of the input.
 As you scroll through them you can see what the register values are to
