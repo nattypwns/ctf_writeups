@@ -33,7 +33,7 @@ Sorry, hello is not the right string!
 At this point, the normal next steps would be to analyze the binary in IDA Pro
 or gdb. For this write-up, I opted to try out a new analysis tool called
 **qira** (http://qira.me). qira is a very new tool by our friend geohot that
-is a "timeless debugger", that is, all of the state (registers and memory) are
+he calls "timeless debugger", that is, all of the state (registers and memory) are
 tracked and saved while a program is debugged, such that you can go back and
 forth within the execution to analyze behavior. 
 
@@ -102,7 +102,11 @@ After you do this, the browser will refresh to show a new, longer timeline on
 the left, this means that the program had a higher step count due to the
 proper length input being supplied. Click on the bar to update the other views
 to use this new "fork". If you scoll through the same area, the jump now
-passes and we get deeper into the program. 
+passes and we get deeper into the program.  Your window should look something
+like this:
+
+![qira
+bitpuzzle](https://github.com/nattypwns/ctf_writeups/tree/master/pico-ctf-2014/bitpuzzle-130/qira-screen.png)
 
 At this point the program starts doing checks on 4-byte pieces of the input.
 As you scroll through them you can see what the register values are to
