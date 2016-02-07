@@ -1,2 +1,2 @@
 # ctf_writeups
-historical ctf writeups from events or practice
+Historical CTF writeups from events or practice.
