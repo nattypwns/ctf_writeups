@@ -9,7 +9,7 @@
 ## Write-up
 
 This challenge included a ciphertext file and some Python code indicating
-that the authors used DES-OFB to encrypt a their message the flag.
+that the authors used DES-OFB to encrypt a message with the flag.
 Even with modern computers, brute forcing DES should take longer than
 the time allotted to this CTF, so there must have been an intentional
 vulnerability.
@@ -57,9 +57,9 @@ blocks `c`.  `c1 = m1^o, c2 = m2^o`  Xor'ing the cipher blocks yields:
 
 Fortunately this puzzle has 97 16-byte blocks, so with a little coding
 we can automate the guessing process and get a reasonable solution
-generically.  The trick is to successively xor each cipher block with
-all of the others, then xor with those with a block of spaces, and note
-the most frequent letters in each column.
+generically.  The trick is to sequentially xor each cipher block with
+all of the others, then xor those results with a block of spaces, and for
+each set note the most frequent letters in column positions.
 
 ```python
 #!/usr/bin/env python3
