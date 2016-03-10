@@ -1,0 +1,101 @@
+package main
+
+import (
+	"encoding/hex"
+	"errors"
+	"io"
+	"io/ioutil"
+	"net/http"
+        "fmt"
+)
+
+func f(key uint32, input uint32) uint32 {
+	sum := (key + input) & 0x00FFFFFF
+	return ((sum & 0x001FFF) << 11) | ((sum & 0xFFE000) >> 13)
+}
+
+func encrypt(lkey uint32, rkey uint32, left uint32, right uint32) (uint32, uint32) {
+	for i := 0; i < 17; i++ {
+		left ^= f(lkey, right)
+		right ^= f(rkey, left)
+	}
+	return left, right
+}
+
+func decrypt(lkey uint32, rkey uint32, left uint32, right uint32) (uint32, uint32) {
+	for i := 0; i < 17; i++ {
+		right ^= f(rkey, left)
+		left ^= f(lkey, right)
+	}
+	return left, right
+}
+
+func stringify(left uint32, right uint32) string {
+	array := []byte{(byte)(left >> 16),
+                (byte)(left >> 8),
+		(byte)(left),
+                (byte)(right >> 16),
+		(byte)(right >> 8),
+		(byte)(right)}
+	return hex.EncodeToString(array)
+}
+
+func unstringify(input string) (uint32, uint32, error) {
+	array, err := hex.DecodeString(input)
+	if err != nil {
+		return 0, 0, errors.New("Bad hex")
+	}
+	if len(array) != 6 {
+		return 0, 0, errors.New("Wrong length")
+	}
+	left := (((uint32)(array[0]) << 16) | ((uint32)(array[1]) << 8) | ((uint32)(array[2])))
+	right := (((uint32)(array[3]) << 16) | ((uint32)(array[4]) << 8) | ((uint32)(array[5])))
+	return left, right, nil
+}
+
+var lkey uint32
+var rkey uint32
+
+func encrypto(w http.ResponseWriter, r *http.Request) {
+	plaintext := r.URL.Path[len("/encrypt/"):]
+	left, right, err := unstringify(plaintext)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	} else {
+		left, right := encrypt(lkey, rkey, left, right)
+		result := stringify(left, right)
+		io.WriteString(w, result)
+	}
+}
+
+func decrypto(w http.ResponseWriter, r *http.Request) {
+	plaintext := r.URL.Path[len("/decrypt/"):]
+	left, right, err := unstringify(plaintext)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	} else {
+		left, right := decrypt(lkey, rkey, left, right)
+		result := stringify(left, right)
+		io.WriteString(w, result)
+	}
+}
+
+func load_key() {
+	key, err := ioutil.ReadFile("key.txt")
+	if err != nil {
+		panic(err)
+	}
+        fmt.Printf("flag:  BKPCTF{%s}\n", key[:12])
+	left, right, err := unstringify(string(key[:12]))
+	if err != nil {
+		panic(err)
+	}
+	lkey, rkey = left, right
+}
+
+func main() {
+	load_key()
+	http.HandleFunc("/encrypt/", encrypto)
+	http.HandleFunc("/decrypt/", decrypto)
+	http.ListenAndServe(":8000", nil)
+}
